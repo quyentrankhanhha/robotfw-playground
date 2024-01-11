@@ -3,9 +3,9 @@ Library    SeleniumLibrary
 *** Variables ***
 
 *** Keywords ***
-Begin FrontOffice Web Test
+Begin Web Test
     Open Browser    about:blank    ${BROWSER}
     Maximize Browser Window
 
-End FrontOffice Web Test
+End Web Test
     Close All Browsers

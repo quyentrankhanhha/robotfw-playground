@@ -1,15 +1,12 @@
 *** Settings ***
-Resource    ../Resources/CommonWeb.robot
-Resource    ../Resources/FrontOfficeApp.robot
+Resource     ../../Resources/Common/CommonWeb.robot
+Resource    ../../Resources/FrontOffice/FrontOfficeApp.robot
+Resource    ../../Data/InputData.robot
 
-Test Setup    Begin FrontOffice Web Test
-Test Teardown    End FrontOffice Web Test
+Test Setup    Begin Web Test
+Test Teardown    End Web Test
 
-# robot -d results Tests/Front_Office.robot
-
-*** Variables ***
-${BROWSER} =    chrome
-${URL} =    https://automationplayground.com/front-office/
+# robot -d results Tests/FrontOffice/Front_Office.robot
 
 *** Test Cases ***
 Should be able to access "Team" page
