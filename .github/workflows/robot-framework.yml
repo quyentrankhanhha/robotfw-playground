@@ -15,11 +15,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: 3.11
+          cache: "pip"
       - uses: actions/cache@v2
         id: cache
         with:
@@ -29,6 +30,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirement.txt
+          pip install robotstatuschecker>=1.4
       - name: Run Test
         run: python -m robot --outputdir Results/ Tests/
       - name: Run Robot Framework tests and generate report
