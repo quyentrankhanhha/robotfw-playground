@@ -3,7 +3,7 @@ name: Robot Framework CI
 on:
   push:
     branches:
-      - master
+      - main
       # do not run tests if file README.md changes
     paths-ignore:
       - "**.md"
@@ -30,9 +30,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirement.txt
       - name: Run Test
-        run: python -m robot --outputdir results Tests/
-      - name: Run Test and create report
-        run: python -m robot -d reports -x junit-report.xml "Tests/"
+        run: python -m robot --outputdir Results/ Tests/
       - name: Run Robot Framework tests and generate report
         run: |
           echo "ROBOT_RC=$?" >> "$GITHUB_ENV"
