@@ -36,8 +36,8 @@ jobs:
           # Get the installed Chrome version
           CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+(\.[0-9]+)+')
 
-          # Use the Chrome version to fetch the matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$
+          # Attempt to fetch the matching ChromeDriver version
+          CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*} || echo "LATEST")
 
           # If the specific version isn't found, fall back to the latest version
           if [ "$CHROMEDRIVER_VERSION" == "LATEST" ]; then
