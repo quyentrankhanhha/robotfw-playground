@@ -36,15 +36,10 @@ jobs:
           # Get the installed Chrome version
           CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+(\.[0-9]+)+')
 
-          # Attempt to fetch the matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*} || echo "LATEST")
+          # Attempt to fetch the exact matching ChromeDriver version for Chrome 129.0.6668.*
+          CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
 
-          # If the specific version isn't found, fall back to the latest version
-          if [ "$CHROMEDRIVER_VERSION" == "LATEST" ]; then
-            CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-          fi
-
-          # Download the correct ChromeDriver
+          # Download the correct ChromeDriver version
           wget --no-verbose --output-document /tmp/chromedriver_linux64.zip http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
 
           # Unzip and set up ChromeDriver
