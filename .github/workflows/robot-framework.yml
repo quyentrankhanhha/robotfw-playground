@@ -31,13 +31,31 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install robotstatuschecker>=1.4
-      - name: Install drivers via selenium-manager
+      - name: Install Chrome and ChromeDriver
         run: |
-          CHROMEDRIVER_VERSION=`wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE`
+          # Get the installed Chrome version
+          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+(\.[0-9]+)+')
+
+          # Use the Chrome version to fetch the matching ChromeDriver version
+          CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
+
+          # Download the correct ChromeDriver
           wget --no-verbose --output-document /tmp/chromedriver_linux64.zip http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+
+          # Unzip and set up ChromeDriver
           unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver
           chmod +x /opt/chromedriver/chromedriver
           ln -fs /opt/chromedriver/chromedriver /usr/local/bin/chromedriver
+
+          # Install Google Chrome if not already installed (you may also want to specify a version if needed)
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+          # Check installed versions of Chrome and ChromeDriver
+          google-chrome --version
+          chromedriver --version
       - name: Run Test
         run: python -m robot --outputdir Results/ Tests/
       - name: Run Robot Framework tests and generate report
