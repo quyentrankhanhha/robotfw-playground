@@ -33,10 +33,11 @@ jobs:
           pip install robotstatuschecker>=1.4
       - name: Install drivers via selenium-manager
         run: |
-          SELENIUM_MANAGER_EXE=$(python -c 'from selenium.webdriver.common.selenium_manager import SeleniumManager; sm=SeleniumManager(); print(f"{str(sm._get_binary())}")')
-          echo "$SELENIUM_MANAGER_EXE"
-          echo "WEBDRIVERPATH=$($SELENIUM_MANAGER_EXE --browser chrome --debug | awk '/INFO[[:space:]]Driver path:/ {print $NF;exit}')" >> "$GITHUB_ENV"
-          echo "$WEBDRIVERPATH"
+          CHROMEDRIVER_VERSION=`wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE`
+          wget --no-verbose --output-document /tmp/chromedriver_linux64.zip http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver
+          chmod +x /opt/chromedriver/chromedriver
+          ln -fs /opt/chromedriver/chromedriver /usr/local/bin/chromedriver
       - name: Run Test
         run: python -m robot --outputdir Results/ Tests/
       - name: Run Robot Framework tests and generate report
