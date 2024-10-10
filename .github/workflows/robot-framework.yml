@@ -35,7 +35,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install robotstatuschecker>=1.4
-      - uses: nanasess/setup-chromedriver@v2
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
+      - name: Install Chrome Driver
+        uses: nanasess/setup-chromedriver@v2
         with:
           # Optional: do not specify to match Chrome's version
           chromedriver-version: "129.0.6668.100"
