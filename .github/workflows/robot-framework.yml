@@ -51,6 +51,8 @@ jobs:
       - name: Setup
         run: |
           rfbrowser init
+      - run: |
+          python run.py
       - name: Run Test
         run: python -m robot -d Results Tests/
       - name: Run Robot Framework tests and generate report
