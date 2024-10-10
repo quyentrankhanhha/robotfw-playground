@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: 3.11
           cache: "pip"
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
       - uses: actions/cache@v2
         id: cache
         with:
@@ -31,36 +36,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install robotstatuschecker>=1.4
-      - name: Install Chrome and ChromeDriver
+      - name: Ini
         run: |
-          # Fetch the latest ChromeDriver version available
-          CHROMEDRIVER_VERSION=$(wget --no-verbose --output-document - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-
-          # Download the latest ChromeDriver
-          wget --no-verbose --output-document /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-
-          # Unzip and set up ChromeDriver
-          unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver
-          chmod +x /opt/chromedriver/chromedriver
-          ln -fs /opt/chromedriver/chromedriver /usr/local/bin/chromedriver
-
-          # Extract the major version of ChromeDriver (e.g., 129 from 129.x.x)
-          CHROME_MAJOR_VERSION=$(echo $CHROMEDRIVER_VERSION | cut -d. -f1)
-
-          # Use the ChromeDriver major version to install the corresponding version of Google Chrome
-          sudo rm -rf /etc/apt/sources.list.d/google-chrome.list
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c "echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list"
-          sudo apt-get update
-
-          # Find the closest available version of Google Chrome that matches the ChromeDriver version
-          sudo apt-get install -y google-chrome-stable=$CHROME_MAJOR_VERSION.*
-
-          # Check installed versions of Chrome and ChromeDriver
-          google-chrome --version
-          chromedriver --version
+          rfbrowser init
       - name: Run Test
-        run: python -m robot --outputdir Results/ Tests/
+        run: python -m robot -d Results Tests/
       - name: Run Robot Framework tests and generate report
         run: |
           echo "ROBOT_RC=$?" >> "$GITHUB_ENV"
